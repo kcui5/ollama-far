@@ -221,6 +221,7 @@ type ChatResponseFunc func(ChatResponse) error
 // fn is called for each response (there may be multiple responses, e.g. if case
 // streaming is enabled).
 func (c *Client) Chat(ctx context.Context, req *ChatRequest, fn ChatResponseFunc) error {
+	fmt.Println("In Client Chat")
 	return c.stream(ctx, http.MethodPost, "/api/chat", req, func(bts []byte) error {
 		var resp ChatResponse
 		if err := json.Unmarshal(bts, &resp); err != nil {

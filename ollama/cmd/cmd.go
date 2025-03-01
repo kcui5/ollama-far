@@ -892,6 +892,8 @@ func chat(cmd *cobra.Command, opts runOptions) (*api.Message, error) {
 		opts.Format = `"` + opts.Format + `"`
 	}
 
+	fmt.Println("In cmd.go ChatRequest")
+
 	req := &api.ChatRequest{
 		Model:    opts.Model,
 		Messages: opts.Messages,
