@@ -113,7 +113,8 @@ func (s *Server) scheduleRunner(ctx context.Context, name string, caps []Capabil
 }
 
 func (s *Server) GenerateHandler(c *gin.Context) {
-	slog.Debug("In GenerateHandler")
+	fmt.Println("In GenerateHandler fmt")
+	slog.Info("In GenerateHandler slog")
 	checkpointStart := time.Now()
 	var req api.GenerateRequest
 	if err := c.ShouldBindJSON(&req); errors.Is(err, io.EOF) {
@@ -1416,9 +1417,9 @@ func (s *Server) PsHandler(c *gin.Context) {
 }
 
 func (s *Server) ChatHandler(c *gin.Context) {
+	fmt.Println("In ChatHandler fmt")
+	slog.Info("In ChatHAndler slog")
 	checkpointStart := time.Now()
-
-	slog.Debug("In ChatHandler")
 
 	var req api.ChatRequest
 	if err := c.ShouldBindJSON(&req); errors.Is(err, io.EOF) {
@@ -1507,7 +1508,6 @@ func (s *Server) ChatHandler(c *gin.Context) {
 
 	slog.Debug("chat request", "images", len(images), "prompt", prompt)
 
-	slog.Debug("In ChatHandler before go func()")
 	ch := make(chan any)
 	go func() {
 		defer close(ch)
@@ -1574,14 +1574,12 @@ func (s *Server) ChatHandler(c *gin.Context) {
 		}
 	}()
 
-	slog.Debug("In ChatHandler before for rr")
 	if req.Stream != nil && !*req.Stream {
 		var resp api.ChatResponse
 		var sb strings.Builder
 		for rr := range ch {
 			switch t := rr.(type) {
 			case api.ChatResponse:
-				slog.Debug("In ChatHandler in api.ChatResponse")
 				sb.WriteString(t.Message.Content)
 				resp = t
 			case gin.H:
