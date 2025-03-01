@@ -113,6 +113,7 @@ func (s *Server) scheduleRunner(ctx context.Context, name string, caps []Capabil
 }
 
 func (s *Server) GenerateHandler(c *gin.Context) {
+	LLAMA_LOG_INFO("In GenerateHandler")
 	checkpointStart := time.Now()
 	var req api.GenerateRequest
 	if err := c.ShouldBindJSON(&req); errors.Is(err, io.EOF) {
@@ -1417,6 +1418,8 @@ func (s *Server) PsHandler(c *gin.Context) {
 func (s *Server) ChatHandler(c *gin.Context) {
 	checkpointStart := time.Now()
 
+	LLAMA_LOG_INFO("In ChatHandler")
+
 	var req api.ChatRequest
 	if err := c.ShouldBindJSON(&req); errors.Is(err, io.EOF) {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "missing request body"})
@@ -1504,6 +1507,7 @@ func (s *Server) ChatHandler(c *gin.Context) {
 
 	slog.Debug("chat request", "images", len(images), "prompt", prompt)
 
+	LLAMA_LOG_INFO("In ChatHandler before go func()")
 	ch := make(chan any)
 	go func() {
 		defer close(ch)
@@ -1545,7 +1549,7 @@ func (s *Server) ChatHandler(c *gin.Context) {
 			// Streaming tool calls:
 			// If tools are recognized, use a flag to track the sending of a tool downstream
 			// This ensures that content is cleared from the message on the last chunk sent
-			sb.WriteString(r.Content + "chathandler")
+			sb.WriteString(r.Content)
 			if toolCalls, ok := m.parseToolCalls(sb.String()); ok {
 				res.Message.ToolCalls = toolCalls
 				for i := range toolCalls {
@@ -1570,12 +1574,14 @@ func (s *Server) ChatHandler(c *gin.Context) {
 		}
 	}()
 
+	LLAMA_LOG_INFO("In ChatHandler before for rr")
 	if req.Stream != nil && !*req.Stream {
 		var resp api.ChatResponse
 		var sb strings.Builder
 		for rr := range ch {
 			switch t := rr.(type) {
 			case api.ChatResponse:
+				LLAMA_LOG_INFO("In ChatHandler in api.ChatResponse")
 				sb.WriteString(t.Message.Content)
 				resp = t
 			case gin.H:
