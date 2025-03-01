@@ -316,7 +316,7 @@ func (s *Server) GenerateHandler(c *gin.Context) {
 				},
 			}
 
-			if _, err := sb.WriteString(cr.Content); err != nil {
+			if _, err := sb.WriteString(cr.Content + "generatehandler"); err != nil {
 				ch <- gin.H{"error": err.Error()}
 			}
 
@@ -1545,7 +1545,7 @@ func (s *Server) ChatHandler(c *gin.Context) {
 			// Streaming tool calls:
 			// If tools are recognized, use a flag to track the sending of a tool downstream
 			// This ensures that content is cleared from the message on the last chunk sent
-			sb.WriteString(r.Content)
+			sb.WriteString(r.Content + "chathandler")
 			if toolCalls, ok := m.parseToolCalls(sb.String()); ok {
 				res.Message.ToolCalls = toolCalls
 				for i := range toolCalls {
