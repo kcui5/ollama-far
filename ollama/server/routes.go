@@ -113,8 +113,6 @@ func (s *Server) scheduleRunner(ctx context.Context, name string, caps []Capabil
 }
 
 func (s *Server) GenerateHandler(c *gin.Context) {
-	fmt.Println("In GenerateHandler fmt")
-	slog.Info("In GenerateHandler slog")
 	checkpointStart := time.Now()
 	var req api.GenerateRequest
 	if err := c.ShouldBindJSON(&req); errors.Is(err, io.EOF) {
@@ -1418,7 +1416,6 @@ func (s *Server) PsHandler(c *gin.Context) {
 
 func (s *Server) ChatHandler(c *gin.Context) {
 	fmt.Println("In ChatHandler fmt")
-	slog.Info("In ChatHAndler slog")
 	checkpointStart := time.Now()
 
 	var req api.ChatRequest
@@ -1537,6 +1534,8 @@ func (s *Server) ChatHandler(c *gin.Context) {
 				res.TotalDuration = time.Since(checkpointStart)
 				res.LoadDuration = checkpointLoaded.Sub(checkpointStart)
 			}
+
+			fmt.Println(r.Content)
 
 			// TODO: tool call checking and filtering should be moved outside of this callback once streaming
 			// however this was a simple change for now without reworking streaming logic of this (and other)
