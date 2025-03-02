@@ -28,6 +28,20 @@ prompts = [
     "What is the correlation between row 50 Capex and row 51 M&A?",
 ]
 
+tool_prompt = """
+Treat this task as if you are working on a spreadsheet with access to functions that can help you. There are three functions: 
+=MEAN(A1, B1)
+returns the mean between two ranges of cells 
+
+=SUM(A1, B1)
+returns the sum between two ranges of cells
+
+=CORRELATION(A1, B1, C1, D1)
+returns the correlation between two series of numbers bewteen (A1, B1) and (C1, D1)
+
+During reasoning, if these functions are helpful then return the call to the function by starting the answer with =function_name 
+"""
+
 answers = [
     "32782",
     "1180166",
@@ -65,7 +79,8 @@ def call_deepseek(prompt):
             "top_p": 0.9,
             "top_k": 40,
             "num_predict": 1000,
-            "repeat_penalty": 1.1
+            "repeat_penalty": 1.1,
+            "context_length": 64000,
         }
     }
 

@@ -17,7 +17,7 @@ def call_deepseek(prompt):
             "temperature": 0.7,
             "top_p": 0.9,
             "top_k": 40,
-            "num_predict": 100,
+            "num_predict": 5000,
             "repeat_penalty": 1.1
         }
     }
