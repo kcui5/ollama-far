@@ -50,7 +50,7 @@ answers = [
 ]
 
 def call_deepseek(prompt):
-    url = "http://localhost:11434/api/generate"
+    url = "https://p05--studio-6--jk66pcv2czhp.code.run/api/generate"
     
     headers = {
         "Content-Type": "application/json"
@@ -75,8 +75,8 @@ def call_deepseek(prompt):
     
     if response.status_code == 200:
         result = response.json()
-        result['time_taken'] = end_time - start_time
-        return result
+        print(f"Time taken: {end_time - start_time}")
+        return result["response"]
     else:
         raise Exception(f"Request failed with status code {response.status_code}")
 
