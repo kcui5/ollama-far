@@ -1,11 +1,10 @@
 import requests
-import json
 import time
 
 with open('output.txt', 'r') as f:
     output_text = f.read()
 
-sys_prompt = "The following is a spreadsheet and a task. Output just the final answer formatted as a number without commas. Do not return anything else except just the numerical final answer."
+sys_prompt = "The following is a spreadsheet and a task. The spreadsheet is given as a mapping of cell location (e.g. A1) to the cell value inside. Output just the final answer of the task formatted as a number without commas. Do not return anything else except just the numerical final answer."
 
 prompts = [
     "What is the average of row 11 Total COGS?",
@@ -58,13 +57,13 @@ def call_deepseek(prompt):
     
     payload = {
         "model": "deepseek-r1:32b",
-        "prompt": sys_prompt + "\n" + output_text + "\n" +  prompt,
+        "prompt": output_text + "\n" + sys_prompt + "\n" +  prompt,
         "stream": False,
         "options": {
             "temperature": 0.7,
             "top_p": 0.9,
             "top_k": 40,
-            "num_predict": 1000,
+            "num_predict": 5000,
             "repeat_penalty": 1.1
         }
     }
@@ -84,5 +83,5 @@ if __name__ == "__main__":
     for i, task in enumerate(prompts):
         print(task)
         result = call_deepseek(task)
-        print(json.dumps(result, indent=2))
+        print(result)
         print("Correct Answer: " + answers[i])
