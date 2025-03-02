@@ -34,5 +34,21 @@ def excel_to_cell_dict(file_path: str, sheet_name: str = None) -> Dict[str, Any]
     return cell_dict
 
 d = excel_to_cell_dict("MSFT_model.xlsx", "MSFT-Model")
+
+# Build output string by iterating through cell locations in order
+output = "{"
+for row in range(1, 56):  # 1 to 205
+    for col in range(0, 52):  # A to AZ
+        # Convert column number to letter(s)
+        if col < 26:
+            col_letter = chr(65 + col)  # A-Z
+        else:
+            col_letter = 'A' + chr(65 + (col - 26))  # AA-AZ
+            
+        cell = f"{col_letter}{row}"
+        if cell in d:
+            output += f"'{cell}':'{d[cell]}', "
+output = output[:-2] + "}"
+
 with open('output.txt', 'w') as f:
-    f.write(str(d))
+    f.write(output)
