@@ -5,6 +5,8 @@ import time
 with open('output.txt', 'r') as f:
     output_text = f.read()
 
+sys_prompt = "The following is a spreadsheet and a task. Output just the final answer formatted as a number without commas. Do not return anything else except just the numerical final answer."
+
 prompts = [
     "What is the average of row 11 Total COGS?",
     "What is the sum of row 11 Total COGS?", 
@@ -26,6 +28,26 @@ prompts = [
     "What is the correlation between row 50 Capex and row 51 M&A?",
 ]
 
+answers = [
+    "32782",
+    "1180166",
+    "38590",
+    "1389257",
+    "56386",
+    "2029895",
+    "9691",
+    "348875",
+    "2139",
+    "77002",
+    "-1014",
+    "-36489",
+    "idk",
+    "idk",
+    "idk",
+    "idk",
+    "idk",
+    "idk",
+]
 
 def call_deepseek(prompt):
     url = "http://localhost:11434/api/generate"
@@ -36,7 +58,7 @@ def call_deepseek(prompt):
     
     payload = {
         "model": "deepseek-r1:32b",
-        "prompt": output_text + "\n" +  prompt,
+        "prompt": sys_prompt + "\n" + output_text + "\n" +  prompt,
         "stream": False,
         "options": {
             "temperature": 0.7,
@@ -59,6 +81,8 @@ def call_deepseek(prompt):
         raise Exception(f"Request failed with status code {response.status_code}")
 
 if __name__ == "__main__":
-    for task in prompts:
+    for i, task in enumerate(prompts):
+        print(task)
         result = call_deepseek(task)
         print(json.dumps(result, indent=2))
+        print("Correct Answer: " + answers[i])
